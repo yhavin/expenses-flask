@@ -4,6 +4,8 @@ from models import User, Expense
 from datetime import datetime
 
 
+TEMP_USER_ID = 123456
+
 @app.route("/")
 def home():
     return "Welcome to expense tracking."
@@ -31,10 +33,17 @@ def register():
 def add_expense():
     data = request.get_json()
     date = datetime.strptime(data["date"], "%Y-%m-%d").date()
-    user_id = 123456
+    user_id = TEMP_USER_ID
     expense = Expense(date=date, description=data["description"], category=data["category"], amount=data["amount"], user_id=user_id)
 
     db.session.add(expense)
     db.session.commit()
 
     return jsonify({"message": "Expense saved successfully"})
+
+
+@app.route("/expenses", methods=["GET"])
+def get_expenses():
+    user_id = TEMP_USER_ID
+    expenses = Expense.query.filter_by(user_id=user_id).all()
+    return jsonify(expenses)
