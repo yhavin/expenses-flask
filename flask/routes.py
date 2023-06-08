@@ -29,7 +29,7 @@ def register():
     return jsonify({"message": f"User {username} registered successfully"}), 201
 
 
-@app.route("/expenses", methods=["POST"])
+@app.route("/api/expenses", methods=["POST"])
 def add_expense():
     data = request.get_json()
     date = datetime.strptime(data["date"], "%Y-%m-%d").date()
@@ -42,8 +42,19 @@ def add_expense():
     return jsonify({"message": "Expense saved successfully"})
 
 
-@app.route("/expenses", methods=["GET"])
+@app.route("/api/expenses", methods=["GET"])
 def get_expenses():
     user_id = TEMP_USER_ID
     expenses = Expense.query.filter_by(user_id=user_id).all()
-    return jsonify(expenses)
+    expenses_list = []
+    for expense in expenses:
+        expenses_dict = {
+            "id": expense.id,
+            "date": expense.date.strftime("%Y-%m-%d"),
+            "description": expense.description,
+            "category": expense.category,
+            "amount": expense.amount
+        }
+        expenses_list.append(expenses_dict)
+
+    return jsonify(expenses=expenses_list)
