@@ -36,6 +36,19 @@ const Expenses = () => {
     });
   };
 
+  const handleDelete = (id) => {
+    fetch(`http://127.0.0.1:5000/api/expenses/${id}`, {
+      method: "DELETE"
+    })
+    .then(response => {
+      fetchExpenses();
+      console.log("Expense deleted successfully");
+    })
+    .catch(error => {
+      console.error("Error:", error);
+    })
+  };
+
   const fetchExpenses = () => {
     fetch("http://127.0.0.1:5000/api/expenses")
     .then(response => response.json())
@@ -62,6 +75,7 @@ const Expenses = () => {
             <th>Description</th>
             <th>Category</th>
             <th>Amount</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -71,6 +85,7 @@ const Expenses = () => {
               <td>{expense.description}</td>
               <td>{expense.category}</td>
               <td>{expense.amount.toFixed(2)}</td>
+              <td><button onClick={() => {handleDelete(expense.id)}}>X</button></td>
             </tr>
           ))}
         </tbody>
