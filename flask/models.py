@@ -1,4 +1,4 @@
-from app import db, app
+from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -33,6 +33,7 @@ class Expense(db.Model):
 
 # Uncomment to rebuild the database schema
 # WARNING: DELETES ALL DATABASE DATA
+# from app import app
 # with app.app_context():
 #     db.drop_all()
 #     db.create_all()
