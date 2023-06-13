@@ -1,14 +1,28 @@
 from app import app, db
-from flask import request, jsonify
+from flask import request, jsonify, send_from_directory
 from models import User, Expense
 from datetime import datetime
 
 
 TEMP_USER_ID = 123456
 
+# Serve static Flask app
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve_frontend(path):
+    return send_from_directory(app.static_folder, "index.html")
+
+
+# Catch all serving for static files
+@app.route("/assets/<path:filename>")
+def serve_assets(filename):
+    return send_from_directory("../react/dist/assets", filename)
+
+
 @app.route("/")
 def home():
     return "Welcome to expense tracking."
+
 
 @app.route("/register", methods=["POST"])
 def register():
