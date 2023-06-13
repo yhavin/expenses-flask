@@ -24,7 +24,7 @@ def home():
     return "Welcome to expense tracking."
 
 
-@app.route("/register", methods=["POST"])
+@app.route("/api/register", methods=["POST"])
 def register():
     data = request.get_json()
     username = data.get('username')
@@ -48,18 +48,18 @@ def add_expense():
     data = request.get_json()
     date = datetime.strptime(data["date"], "%Y-%m-%d").date()
     user_id = TEMP_USER_ID
-    expense = Expense(date=date, description=data["description"], category=data["category"], amount=data["amount"], user_id=user_id)
+    expense = Expense(date=date, description=data["description"], category=data["category"], amount=data["amount"], user_id=user_id, deleted=False)
 
     db.session.add(expense)
     db.session.commit()
 
-    return jsonify({"message": "Expense saved successfully"})
+    return jsonify({"message": "Expense saved successfully"}), 201
 
 
 @app.route("/api/expenses", methods=["GET"])
 def get_expenses():
     user_id = TEMP_USER_ID
-    expenses = Expense.query.filter_by(user_id=user_id).all()
+    expenses = Expense.query.filter_by(user_id=user_id, deleted=False).all()
     expenses_list = []
     for expense in expenses:
         expenses_dict = {
@@ -71,4 +71,18 @@ def get_expenses():
         }
         expenses_list.append(expenses_dict)
 
-    return jsonify(expenses=expenses_list)
+    return jsonify(expenses=expenses_list), 200
+
+
+@app.route("/api/expenses/<id>", methods=["DELETE"])
+def delete_expense(id):
+    user_id = TEMP_USER_ID
+    expense = Expense.query.filter_by(id=id).first()
+    
+    if not expense:
+        return jsonify({"message": f"There is no expense with ID {id}"}), 404
+    
+    expense.deleted = True
+    db.session.commit()
+
+    return jsonify({"message": f"Expense {id} successfully marked as deleted"}), 204
