@@ -1,6 +1,6 @@
 import React from "react";
 
-const LoginForm = ({ loginAttempt, handleInput }) => {
+const LoginForm = ({ loginAttempt, handleInput, handleLogin }) => {
   return (
     <div>
       <h3>Login</h3>
@@ -27,6 +27,7 @@ const LoginForm = ({ loginAttempt, handleInput }) => {
             />
           </label>
         </div>
+        <button type="submit" onClick={handleLogin} style={{ width: '8rem', justifySelf: 'start' }}>Login</button>
       </form>
     </div>
   )

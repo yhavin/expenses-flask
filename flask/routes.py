@@ -1,5 +1,6 @@
 from app import app, db
 from flask import request, jsonify, send_from_directory
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from models import User, Expense
 from datetime import datetime
 
@@ -41,6 +42,35 @@ def register():
     db.session.commit()
 
     return jsonify({"message": f"User {username} registered successfully"}), 201
+
+
+login_manager = LoginManager(app)
+# login_manager.login_view = "/"
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+
+@app.route("/api/login", methods=["POST"])
+def login():
+    data = request.get_json()
+    username = data.get("username")
+    password = data.get("password")
+
+    user = User.query.filter_by(username=username).first()
+    if user and user.check_password(password):
+        login_user(user)
+        return jsonify({"message": "Login successful"})
+    
+    return jsonify({"message": "Invalid credentials"}), 401
+
+
+@app.route("/api/logout", methods=["POST"])
+@login_required
+def logout():
+    logout_user()
+    return jsonify({"message": "Logout successful"})
 
 
 @app.route("/api/expenses", methods=["POST"])
