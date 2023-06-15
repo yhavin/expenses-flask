@@ -15,20 +15,20 @@ const Home = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    fetch("http://127.0.0.1:5000/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(loginAttempt)
-    })
-    .then(response => response.json())
-    .then(data => {
-      setCurrentUser(data.username);
-      console.log(data);
-      setLoginAttempt(emptyLogin);
-    })
-    .catch(error => {
-      console.error("Error:", error)
-    });
+    // fetch("http://127.0.0.1:5000/api/login", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(loginAttempt)
+    // })
+    // .then(response => response.json())
+    // .then(data => {
+    //   setCurrentUser(data.username);
+    //   console.log(data);
+    //   setLoginAttempt(emptyLogin);
+    // })
+    // .catch(error => {
+    //   console.error("Error:", error)
+    // });
   };
 
   return (
