@@ -6,6 +6,7 @@ const Home = () => {
   const emptyLogin = { username: "", password: "" }
 
   const [loginAttempt, setLoginAttempt] = useState(emptyLogin);
+  const [currentUser, setCurrentUser] = useState();
 
   const handleInput = (e) => {
     const { name, value } = e.target;
@@ -19,11 +20,11 @@ const Home = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(loginAttempt)
     })
-    .then(response => {
-      if (response.ok) {
-        setLoginAttempt(emptyLogin);
-        console.log("User logged in successfully")
-      }
+    .then(response => response.json())
+    .then(data => {
+      setCurrentUser(data.username);
+      console.log(data);
+      setLoginAttempt(emptyLogin);
     })
     .catch(error => {
       console.error("Error:", error)
@@ -32,7 +33,7 @@ const Home = () => {
 
   return (
     <div>
-      <h1>Welcome to expense tracking</h1>
+      <h1>Welcome to expense tracking{currentUser ? ", " + currentUser : ""}</h1>
       <LoginForm 
         loginAttempt={loginAttempt}
         handleInput={handleInput}
